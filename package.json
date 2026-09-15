@@ -1,0 +1,10 @@
+{
+  "name": "papa-ai-v2",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Papa AI V2 - realtime AI companion",
+  "engines": {
+    "node": "22.x"
+  }
+}
