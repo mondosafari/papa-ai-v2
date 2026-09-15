@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <title>Papa AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family:
+        "Hiragino Maru Gothic ProN",
+        "Yu Gothic",
+        system-ui,
+        sans-serif;
+
+      background:
+        linear-gradient(
+          180deg,
+          #79d6ff 0%,
+          #b8eaff 48%,
+          #f3fbff 100%
+        );
+
+      color: #23405c;
+    }
+
+    /* =========================
+       BACKGROUND
+    ========================= */
+
+    .sky {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .sun {
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      right: -20px;
+      top: -25px;
+
+      background:
+        radial-gradient(
+          circle,
+          #fff7ad 0%,
+          #ffd96c 60%,
+          #ffc84f 100%
+        );
+
+      box-shadow:
+        0 0 60px rgba(255, 230, 100, .65);
+    }
+
+    .cloud {
+      position: absolute;
+      width: 150px;
+      height: 48px;
+
+      background: rgba(255,255,255,.82);
+      border-radius: 50px;
+
+      filter:
+        drop-shadow(0 7px 8px rgba(70,140,180,.08));
+
+      animation: cloudMove 26s linear infinite;
+    }
+
+    .cloud::before,
+    .cloud::after {
+      content: "";
+      position: absolute;
+      background: inherit;
+      border-radius: 50%;
+    }
+
+    .cloud::before {
+      width: 65px;
+      height: 65px;
+      left: 25px;
+      top: -30px;
+    }
+
+    .cloud::after {
+      width: 85px;
+      height: 85px;
+      right: 20px;
+      top: -42px;
+    }
+
+    .cloud1 {
+      top: 18%;
+      left: -180px;
+    }
+
+    .cloud2 {
+      top: 36%;
+      left: -260px;
+      transform: scale(.7);
+      opacity: .65;
+      animation-duration: 34s;
+      animation-delay: -12s;
+    }
+
+    @keyframes cloudMove {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(calc(100vw + 400px));
+      }
+    }
+
+
+    /* =========================
+       APP
+    ========================= */
+
+    .app {
+      position: relative;
+      z-index: 10;
+
+      width: 100%;
+      height: 100%;
+
+      display: flex;
+      flex-direction: column;
+
+      align-items: center;
+
+      padding:
+        max(18px, env(safe-area-inset-top))
+        20px
+        max(22px, env(safe-area-inset-bottom));
+    }
+
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .header {
+      width: min(100%, 700px);
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      flex-shrink: 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      font-size: 22px;
+      font-weight: 800;
+
+      color: white;
+
+      text-shadow:
+        0 2px 8px rgba(0,90,150,.22);
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+
+      display: grid;
+      place-items: center;
+
+      background: white;
+      border-radius: 15px;
+
+      font-size: 23px;
+
+      box-shadow:
+        0 7px 20px rgba(50,130,180,.18);
+    }
+
+    .status {
+      background: rgba(255,255,255,.78);
+
+      padding: 8px 13px;
+      border-radius: 100px;
+
+      font-size: 13px;
+      font-weight: 700;
+
+      box-shadow:
+        0 5px 15px rgba(60,130,180,.12);
+    }
+
+    .status-dot {
+      display: inline-block;
+
+      width: 9px;
+      height: 9px;
+
+      border-radius: 50%;
+
+      background: #63d58b;
+
+      margin-right: 5px;
+
+      box-shadow:
+        0 0 0 4px rgba(99,213,139,.15);
+    }
+
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    .main {
+      width: min(100%, 600px);
+
+      flex: 1;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      min-height: 0;
+    }
+
+
+    /* =========================
+       MESSAGE
+    ========================= */
+
+    .welcome {
+      text-align: center;
+      margin-bottom: 13px;
+    }
+
+    .welcome-small {
+      font-size: 15px;
+      font-weight: 700;
+      opacity: .72;
+      margin-bottom: 4px;
+    }
+
+    .welcome-main {
+      font-size:
+        clamp(23px, 5vw, 34px);
+
+      font-weight: 900;
+
+      letter-spacing: .02em;
+    }
+
+
+    /* =========================
+       AVATAR
+    ========================= */
+
+    .avatar-card {
+      position: relative;
+
+      width:
+        min(72vw, 350px);
+
+      aspect-ratio: 1 / 1;
+
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,.95),
+          rgba(230,248,255,.88)
+        );
+
+      border:
+        7px solid rgba(255,255,255,.75);
+
+      box-shadow:
+        0 20px 45px rgba(35,120,170,.20),
+        inset 0 0 30px rgba(255,255,255,.7);
+
+      display: grid;
+      place-items: center;
+
+      overflow: hidden;
+
+      transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+    }
+
+    .avatar-card.talking {
+      transform: scale(1.025);
+
+      box-shadow:
+        0 20px 55px rgba(35,120,170,.30),
+        0 0 0 10px rgba(255,255,255,.25);
+    }
+
+    /*
+      LiveAvatarは最終的に
+      このエリアへ入れる。
+    */
+
+    .avatar-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      transform: translateY(7px);
+    }
+
+    .papa-face {
+      font-size:
+        clamp(110px, 29vw, 170px);
+
+      line-height: 1;
+
+      filter:
+        drop-shadow(0 8px 9px rgba(50,100,140,.10));
+    }
+
+    .papa-name {
+      margin-top: 5px;
+
+      background: white;
+
+      padding: 7px 18px;
+
+      border-radius: 100px;
+
+      font-weight: 900;
+      font-size: 15px;
+
+      box-shadow:
+        0 5px 12px rgba(50,100,140,.10);
+    }
+
+
+    /* =========================
+       SPEECH BUBBLE
+    ========================= */
+
+    .speech {
+      position: relative;
+
+      margin-top: -6px;
+
+      min-height: 62px;
+      width: min(94%, 470px);
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      text-align: center;
+
+      padding: 14px 22px;
+
+      background: rgba(255,255,255,.96);
+
+      border-radius: 24px;
+
+      font-size:
+        clamp(16px, 3.8vw, 20px);
+
+      font-weight: 800;
+
+      line-height: 1.45;
+
+      box-shadow:
+        0 10px 25px rgba(40,110,150,.13);
+    }
+
+    .speech::before {
+      content: "";
+
+      position: absolute;
+
+      top: -11px;
+
+      width: 22px;
+      height: 22px;
+
+      background: white;
+
+      transform: rotate(45deg);
+
+      border-radius: 4px;
+    }
+
+    #message {
+      position: relative;
+      z-index: 2;
+    }
+
+
+    /* =========================
+       CONTROLS
+    ========================= */
+
+    .controls {
+      width: min(100%, 500px);
+
+      flex-shrink: 0;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      gap: 9px;
+
+      padding-top: 10px;
+    }
+
+    .talk-button {
+      border: none;
+
+      width: min(90%, 350px);
+      height: 74px;
+
+      border-radius: 38px;
+
+      background:
+        linear-gradient(
+          180deg,
+          #ff7f75,
+          #ff5e61
+        );
+
+      color: white;
+
+      font-size: 21px;
+      font-weight: 900;
+
+      letter-spacing: .04em;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 10px 0 #d9474e,
+        0 17px 25px rgba(210,65,70,.25);
+
+      transition:
+        transform .08s ease,
+        box-shadow .08s ease;
+
+      touch-action: manipulation;
+    }
+
+    .talk-button:active {
+      transform: translateY(7px);
+
+      box-shadow:
+        0 3px 0 #d9474e,
+        0 8px 15px rgba(210,65,70,.20);
+    }
+
+    .talk-button.listening {
+      background:
+        linear-gradient(
+          180deg,
+          #66d5a0,
+          #38bc7d
+        );
+
+      box-shadow:
+        0 10px 0 #26925e,
+        0 17px 25px rgba(40,160,100,.25);
+    }
+
+    .hint {
+      font-size: 13px;
+      font-weight: 700;
+
+      color: rgba(35,64,92,.60);
+    }
+
+
+    /* =========================
+       LITTLE STARS
+    ========================= */
+
+    .star {
+      position: absolute;
+
+      font-size: 22px;
+
+      opacity: .65;
+
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .star1 {
+      left: 10%;
+      top: 30%;
+    }
+
+    .star2 {
+      right: 9%;
+      top: 47%;
+
+      animation-delay: -2s;
+    }
+
+    @keyframes float {
+      0%,100% {
+        transform: translateY(0) rotate(-8deg);
+      }
+
+      50% {
+        transform: translateY(-12px) rotate(8deg);
+      }
+    }
+
+
+    /* =========================
+       SMALL DEVICES
+    ========================= */
+
+    @media (max-height: 700px) {
+
+      .app {
+        padding-top: 10px;
+        padding-bottom: 12px;
+      }
+
+      .logo {
+        font-size: 18px;
+      }
+
+      .logo-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .welcome {
+        margin-bottom: 7px;
+      }
+
+      .welcome-small {
+        display: none;
+      }
+
+      .avatar-card {
+        width: min(48vh, 280px);
+      }
+
+      .speech {
+        min-height: 50px;
+        padding: 10px 18px;
+      }
+
+      .talk-button {
+        height: 62px;
+      }
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+  <!-- 背景 -->
+  <div class="sky">
+    <div class="sun"></div>
+
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+
+    <div class="star star1">⭐</div>
+    <div class="star star2">✨</div>
+  </div>
+
+
+  <!-- アプリ -->
+  <main class="app">
+
+    <!-- ヘッダー -->
+    <header class="header">
+
+      <div class="logo">
+        <div class="logo-icon">👨</div>
+        Papa AI
+      </div>
+
+      <div class="status">
+        <span class="status-dot"></span>
+        パパいるよ
+      </div>
+
+    </header>
+
+
+    <!-- メイン -->
+    <section class="main">
+
+      <div class="welcome">
+
+        <div class="welcome-small">
+          おかえり！
+        </div>
+
+        <div class="welcome-main">
+          パパとはなそう
+        </div>
+
+      </div>
+
+
+      <!--
+        ★ Phase 2
+        このavatar-cardの中身を
+        HeyGen LiveAvatarに置き換える
+      -->
+
+      <div
+        class="avatar-card"
+        id="avatarCard"
+      >
+
+        <div class="avatar-placeholder">
+
+          <div class="papa-face">
+            👨
+          </div>
+
+          <div class="papa-name">
+            パパ
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- パパのセリフ -->
+
+      <div class="speech">
+
+        <span id="message">
+          今日はどんな日だった？
+        </span>
+
+      </div>
+
+    </section>
+
+
+    <!-- 操作 -->
+
+    <section class="controls">
+
+      <button
+        class="talk-button"
+        id="talkButton"
+        type="button"
+      >
+        🎙️ パパとはなす
+      </button>
+
+      <div
+        class="hint"
+        id="hint"
+      >
+        ボタンをおして、おはなししてね
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script>
+
+    /*
+      ========================================
+      Papa AI V2
+      UIテスト用
+      ========================================
+
+      次のSTEPでここに
+      OpenAI Realtime + WebRTCを接続する。
+
+      今はボタンを押した時の
+      UIだけ確認できる。
+    */
+
+
+    const talkButton =
+      document.getElementById("talkButton");
+
+    const message =
+      document.getElementById("message");
+
+    const hint =
+      document.getElementById("hint");
+
+    const avatarCard =
+      document.getElementById("avatarCard");
+
+
+    let active = false;
+
+
+    talkButton.addEventListener(
+      "click",
+      () => {
+
+        active = !active;
+
+
+        if (active) {
+
+          talkButton.classList.add(
+            "listening"
+          );
+
+          avatarCard.classList.add(
+            "talking"
+          );
+
+          talkButton.textContent =
+            "👂 きいてるよ";
+
+          message.textContent =
+            "うんうん、どうした？";
+
+          hint.textContent =
+            "そのままパパに話してね";
+
+
+        } else {
+
+          talkButton.classList.remove(
+            "listening"
+          );
+
+          avatarCard.classList.remove(
+            "talking"
+          );
+
+          talkButton.textContent =
+            "🎙️ パパとはなす";
+
+          message.textContent =
+            "またお話しようね！";
+
+          hint.textContent =
+            "ボタンをおして、おはなししてね";
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
