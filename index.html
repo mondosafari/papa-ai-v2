@@ -1,86 +1,76 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
 
   <title>Papa AI</title>
 
   <style>
     * {
       box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
     }
 
-    html, body {
+    html,
+    body {
       margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
+      min-height: 100%;
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
     }
 
     body {
-      font-family:
-        "Hiragino Maru Gothic ProN",
-        "Yu Gothic",
-        system-ui,
-        sans-serif;
-
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: #24324a;
       background:
         linear-gradient(
           180deg,
-          #79d6ff 0%,
-          #b8eaff 48%,
-          #f3fbff 100%
+          #8ed8ff 0%,
+          #c8ecff 48%,
+          #f8fdff 100%
         );
-
-      color: #23405c;
     }
 
-    /* =========================
-       BACKGROUND
-    ========================= */
-
-    .sky {
-      position: fixed;
-      inset: 0;
+    .app {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding:
+        max(18px, env(safe-area-inset-top))
+        20px
+        max(28px, env(safe-area-inset-bottom));
       overflow: hidden;
-      pointer-events: none;
     }
 
     .sun {
       position: absolute;
-      width: 130px;
-      height: 130px;
+      top: 80px;
+      right: 8%;
+      width: 85px;
+      height: 85px;
       border-radius: 50%;
-      right: -20px;
-      top: -25px;
-
-      background:
-        radial-gradient(
-          circle,
-          #fff7ad 0%,
-          #ffd96c 60%,
-          #ffc84f 100%
-        );
-
-      box-shadow:
-        0 0 60px rgba(255, 230, 100, .65);
+      background: rgba(255, 231, 122, 0.92);
+      box-shadow: 0 0 45px rgba(255, 222, 92, 0.5);
     }
 
     .cloud {
       position: absolute;
       width: 150px;
       height: 48px;
-
-      background: rgba(255,255,255,.82);
       border-radius: 50px;
-
-      filter:
-        drop-shadow(0 7px 8px rgba(70,140,180,.08));
-
-      animation: cloudMove 26s linear infinite;
+      background: rgba(255, 255, 255, 0.72);
+      filter: blur(0.2px);
+      animation: float 9s ease-in-out infinite;
     }
 
     .cloud::before,
@@ -95,684 +85,937 @@
       width: 65px;
       height: 65px;
       left: 25px;
-      top: -30px;
+      top: -28px;
     }
 
     .cloud::after {
-      width: 85px;
-      height: 85px;
+      width: 80px;
+      height: 80px;
       right: 20px;
-      top: -42px;
+      top: -38px;
     }
 
-    .cloud1 {
-      top: 18%;
-      left: -180px;
+    .cloud.one {
+      top: 170px;
+      left: -45px;
     }
 
-    .cloud2 {
-      top: 36%;
-      left: -260px;
-      transform: scale(.7);
-      opacity: .65;
-      animation-duration: 34s;
-      animation-delay: -12s;
+    .cloud.two {
+      top: 300px;
+      right: -65px;
+      transform: scale(0.8);
+      animation-delay: -4s;
     }
 
-    @keyframes cloudMove {
-      from {
-        transform: translateX(0);
+    @keyframes float {
+      0%,
+      100% {
+        transform: translateY(0);
       }
 
-      to {
-        transform: translateX(calc(100vw + 400px));
+      50% {
+        transform: translateY(-10px);
       }
     }
-
-
-    /* =========================
-       APP
-    ========================= */
-
-    .app {
-      position: relative;
-      z-index: 10;
-
-      width: 100%;
-      height: 100%;
-
-      display: flex;
-      flex-direction: column;
-
-      align-items: center;
-
-      padding:
-        max(18px, env(safe-area-inset-top))
-        20px
-        max(22px, env(safe-area-inset-bottom));
-    }
-
-
-    /* =========================
-       HEADER
-    ========================= */
 
     .header {
-      width: min(100%, 700px);
-
+      width: min(720px, 100%);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-
-      flex-shrink: 0;
+      justify-content: space-between;
+      z-index: 2;
     }
 
     .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-
       font-size: 22px;
       font-weight: 800;
-
-      color: white;
-
-      text-shadow:
-        0 2px 8px rgba(0,90,150,.22);
-    }
-
-    .logo-icon {
-      width: 42px;
-      height: 42px;
-
-      display: grid;
-      place-items: center;
-
-      background: white;
-      border-radius: 15px;
-
-      font-size: 23px;
-
-      box-shadow:
-        0 7px 20px rgba(50,130,180,.18);
     }
 
     .status {
-      background: rgba(255,255,255,.78);
-
-      padding: 8px 13px;
-      border-radius: 100px;
-
-      font-size: 13px;
+      padding: 9px 15px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(12px);
+      font-size: 14px;
       font-weight: 700;
-
-      box-shadow:
-        0 5px 15px rgba(60,130,180,.12);
+      box-shadow: 0 5px 20px rgba(44, 89, 120, 0.08);
     }
 
     .status-dot {
       display: inline-block;
-
       width: 9px;
       height: 9px;
-
+      margin-right: 7px;
       border-radius: 50%;
-
-      background: #63d58b;
-
-      margin-right: 5px;
-
-      box-shadow:
-        0 0 0 4px rgba(99,213,139,.15);
+      background: #9aa8b5;
     }
 
-
-    /* =========================
-       MAIN
-    ========================= */
+    .status.connected .status-dot {
+      background: #31c66d;
+      box-shadow: 0 0 0 5px rgba(49, 198, 109, 0.14);
+    }
 
     .main {
-      width: min(100%, 600px);
-
+      width: min(720px, 100%);
       flex: 1;
-
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-
-      min-height: 0;
+      justify-content: center;
+      z-index: 2;
+      padding: 28px 0 15px;
     }
-
-
-    /* =========================
-       MESSAGE
-    ========================= */
 
     .welcome {
       text-align: center;
-      margin-bottom: 13px;
+      margin-bottom: 22px;
     }
 
-    .welcome-small {
-      font-size: 15px;
-      font-weight: 700;
-      opacity: .72;
-      margin-bottom: 4px;
+    .welcome h1 {
+      margin: 0 0 7px;
+      font-size: clamp(26px, 5vw, 38px);
+      line-height: 1.2;
     }
 
-    .welcome-main {
-      font-size:
-        clamp(23px, 5vw, 34px);
-
-      font-weight: 900;
-
-      letter-spacing: .02em;
+    .welcome p {
+      margin: 0;
+      font-size: 16px;
+      opacity: 0.72;
     }
 
-
-    /* =========================
-       AVATAR
-    ========================= */
-
-    .avatar-card {
+    .avatar-wrap {
       position: relative;
+      width: min(58vw, 300px);
+      aspect-ratio: 1;
+      margin: 5px auto 24px;
+    }
 
-      width:
-        min(72vw, 350px);
-
-      aspect-ratio: 1 / 1;
-
+    .avatar-glow {
+      position: absolute;
+      inset: -13px;
       border-radius: 50%;
+      background: rgba(255, 255, 255, 0.32);
+      animation: breathe 3s ease-in-out infinite;
+    }
 
+    .avatar {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       background:
         linear-gradient(
           145deg,
-          rgba(255,255,255,.95),
-          rgba(230,248,255,.88)
+          rgba(255,255,255,0.95),
+          rgba(239,248,255,0.86)
         );
-
-      border:
-        7px solid rgba(255,255,255,.75);
-
+      border: 7px solid rgba(255,255,255,0.78);
       box-shadow:
-        0 20px 45px rgba(35,120,170,.20),
-        inset 0 0 30px rgba(255,255,255,.7);
-
-      display: grid;
-      place-items: center;
-
-      overflow: hidden;
-
-      transition:
-        transform .25s ease,
-        box-shadow .25s ease;
+        0 20px 50px rgba(43, 91, 125, 0.18),
+        inset 0 0 25px rgba(255,255,255,0.7);
     }
 
-    .avatar-card.talking {
-      transform: scale(1.025);
-
-      box-shadow:
-        0 20px 55px rgba(35,120,170,.30),
-        0 0 0 10px rgba(255,255,255,.25);
-    }
-
-    /*
-      LiveAvatarは最終的に
-      このエリアへ入れる。
-    */
-
-    .avatar-placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-
-      transform: translateY(7px);
-    }
-
-    .papa-face {
-      font-size:
-        clamp(110px, 29vw, 170px);
-
+    .avatar-face {
+      font-size: clamp(80px, 20vw, 125px);
       line-height: 1;
-
-      filter:
-        drop-shadow(0 8px 9px rgba(50,100,140,.10));
     }
 
-    .papa-name {
-      margin-top: 5px;
-
-      background: white;
-
-      padding: 7px 18px;
-
-      border-radius: 100px;
-
-      font-weight: 900;
-      font-size: 15px;
-
-      box-shadow:
-        0 5px 12px rgba(50,100,140,.10);
-    }
-
-
-    /* =========================
-       SPEECH BUBBLE
-    ========================= */
-
-    .speech {
-      position: relative;
-
-      margin-top: -6px;
-
-      min-height: 62px;
-      width: min(94%, 470px);
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      text-align: center;
-
-      padding: 14px 22px;
-
-      background: rgba(255,255,255,.96);
-
-      border-radius: 24px;
-
-      font-size:
-        clamp(16px, 3.8vw, 20px);
-
+    .avatar-name {
+      margin-top: 8px;
       font-weight: 800;
-
-      line-height: 1.45;
-
-      box-shadow:
-        0 10px 25px rgba(40,110,150,.13);
+      font-size: 18px;
     }
 
-    .speech::before {
-      content: "";
-
-      position: absolute;
-
-      top: -11px;
-
-      width: 22px;
-      height: 22px;
-
-      background: white;
-
-      transform: rotate(45deg);
-
-      border-radius: 4px;
+    .avatar-wrap.listening .avatar-glow {
+      animation: listening 1.1s ease-in-out infinite;
     }
 
-    #message {
-      position: relative;
-      z-index: 2;
-    }
-
-
-    /* =========================
-       CONTROLS
-    ========================= */
-
-    .controls {
-      width: min(100%, 500px);
-
-      flex-shrink: 0;
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-
-      gap: 9px;
-
-      padding-top: 10px;
-    }
-
-    .talk-button {
-      border: none;
-
-      width: min(90%, 350px);
-      height: 74px;
-
-      border-radius: 38px;
-
-      background:
-        linear-gradient(
-          180deg,
-          #ff7f75,
-          #ff5e61
-        );
-
-      color: white;
-
-      font-size: 21px;
-      font-weight: 900;
-
-      letter-spacing: .04em;
-
-      cursor: pointer;
-
-      box-shadow:
-        0 10px 0 #d9474e,
-        0 17px 25px rgba(210,65,70,.25);
-
-      transition:
-        transform .08s ease,
-        box-shadow .08s ease;
-
-      touch-action: manipulation;
-    }
-
-    .talk-button:active {
-      transform: translateY(7px);
-
-      box-shadow:
-        0 3px 0 #d9474e,
-        0 8px 15px rgba(210,65,70,.20);
-    }
-
-    .talk-button.listening {
-      background:
-        linear-gradient(
-          180deg,
-          #66d5a0,
-          #38bc7d
-        );
-
-      box-shadow:
-        0 10px 0 #26925e,
-        0 17px 25px rgba(40,160,100,.25);
-    }
-
-    .hint {
-      font-size: 13px;
-      font-weight: 700;
-
-      color: rgba(35,64,92,.60);
-    }
-
-
-    /* =========================
-       LITTLE STARS
-    ========================= */
-
-    .star {
-      position: absolute;
-
-      font-size: 22px;
-
-      opacity: .65;
-
-      animation: float 4s ease-in-out infinite;
-    }
-
-    .star1 {
-      left: 10%;
-      top: 30%;
-    }
-
-    .star2 {
-      right: 9%;
-      top: 47%;
-
-      animation-delay: -2s;
-    }
-
-    @keyframes float {
-      0%,100% {
-        transform: translateY(0) rotate(-8deg);
+    @keyframes breathe {
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.5;
       }
 
       50% {
-        transform: translateY(-12px) rotate(8deg);
+        transform: scale(1.04);
+        opacity: 0.85;
       }
     }
 
-
-    /* =========================
-       SMALL DEVICES
-    ========================= */
-
-    @media (max-height: 700px) {
-
-      .app {
-        padding-top: 10px;
-        padding-bottom: 12px;
+    @keyframes listening {
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.45;
       }
 
-      .logo {
-        font-size: 18px;
+      50% {
+        transform: scale(1.1);
+        opacity: 0.9;
+      }
+    }
+
+    .bubble {
+      position: relative;
+      width: min(520px, 92%);
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 17px 22px;
+      margin-bottom: 24px;
+      text-align: center;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 12px 35px rgba(43, 91, 125, 0.12);
+      font-size: clamp(17px, 3vw, 20px);
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .bubble::before {
+      content: "";
+      position: absolute;
+      top: -11px;
+      left: 50%;
+      width: 22px;
+      height: 22px;
+      transform: translateX(-50%) rotate(45deg);
+      background: rgba(255,255,255,0.88);
+    }
+
+    .controls {
+      width: min(420px, 92%);
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      font: inherit;
+      font-size: 18px;
+      font-weight: 800;
+      border-radius: 22px;
+      padding: 18px 22px;
+      transition:
+        transform 0.15s ease,
+        opacity 0.15s ease,
+        box-shadow 0.15s ease;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    #talkButton {
+      color: white;
+      background: linear-gradient(135deg, #ff6464, #ff4545);
+      box-shadow: 0 12px 28px rgba(255, 69, 69, 0.3);
+    }
+
+    #talkButton.connecting {
+      background: linear-gradient(135deg, #ffb94a, #ff9f35);
+    }
+
+    #talkButton.connected {
+      background: linear-gradient(135deg, #35ca78, #20ad60);
+      box-shadow: 0 12px 28px rgba(32, 173, 96, 0.25);
+    }
+
+    #endButton {
+      display: none;
+      margin-top: 11px;
+      color: #5c6673;
+      background: rgba(255,255,255,0.7);
+      box-shadow: 0 8px 20px rgba(43, 91, 125, 0.08);
+    }
+
+    #endButton.visible {
+      display: block;
+    }
+
+    .hint {
+      margin-top: 14px;
+      min-height: 22px;
+      text-align: center;
+      font-size: 13px;
+      opacity: 0.65;
+    }
+
+    .stars {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      opacity: 0.32;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+
+    .star:nth-child(1) {
+      left: 12%;
+      top: 35%;
+    }
+
+    .star:nth-child(2) {
+      right: 12%;
+      top: 47%;
+      animation-delay: -1s;
+    }
+
+    .star:nth-child(3) {
+      left: 20%;
+      bottom: 15%;
+      animation-delay: -2s;
+    }
+
+    @keyframes twinkle {
+      0%,
+      100% {
+        opacity: 0.2;
+        transform: scale(0.9);
       }
 
-      .logo-icon {
-        width: 36px;
-        height: 36px;
+      50% {
+        opacity: 0.7;
+        transform: scale(1.15);
+      }
+    }
+
+    @media (max-height: 720px) {
+      .main {
+        justify-content: flex-start;
+      }
+
+      .avatar-wrap {
+        width: min(42vw, 220px);
       }
 
       .welcome {
-        margin-bottom: 7px;
+        margin-bottom: 14px;
       }
 
-      .welcome-small {
-        display: none;
-      }
-
-      .avatar-card {
-        width: min(48vh, 280px);
-      }
-
-      .speech {
-        min-height: 50px;
-        padding: 10px 18px;
-      }
-
-      .talk-button {
-        height: 62px;
+      .bubble {
+        margin-bottom: 16px;
       }
     }
-
   </style>
 </head>
 
-
 <body>
+  <div class="app">
 
-  <!-- 背景 -->
-  <div class="sky">
     <div class="sun"></div>
+    <div class="cloud one"></div>
+    <div class="cloud two"></div>
 
-    <div class="cloud cloud1"></div>
-    <div class="cloud cloud2"></div>
+    <div class="stars">
+      <div class="star">✦</div>
+      <div class="star">✦</div>
+      <div class="star">✦</div>
+    </div>
 
-    <div class="star star1">⭐</div>
-    <div class="star star2">✨</div>
-  </div>
-
-
-  <!-- アプリ -->
-  <main class="app">
-
-    <!-- ヘッダー -->
     <header class="header">
+      <div class="logo">👨 Papa AI</div>
 
-      <div class="logo">
-        <div class="logo-icon">👨</div>
-        Papa AI
-      </div>
-
-      <div class="status">
+      <div id="status" class="status">
         <span class="status-dot"></span>
-        パパいるよ
+        <span id="statusText">パパいるよ</span>
       </div>
-
     </header>
 
-
-    <!-- メイン -->
-    <section class="main">
+    <main class="main">
 
       <div class="welcome">
-
-        <div class="welcome-small">
-          おかえり！
-        </div>
-
-        <div class="welcome-main">
-          パパとはなそう
-        </div>
-
+        <h1>おかえり！</h1>
+        <p>パパとはなそう</p>
       </div>
 
+      <div id="avatarWrap" class="avatar-wrap">
+        <div class="avatar-glow"></div>
 
-      <!--
-        ★ Phase 2
-        このavatar-cardの中身を
-        HeyGen LiveAvatarに置き換える
-      -->
+        <div class="avatar">
+          <div class="avatar-face">👨</div>
+          <div class="avatar-name">パパ</div>
+        </div>
+      </div>
 
-      <div
-        class="avatar-card"
-        id="avatarCard"
-      >
+      <div id="bubble" class="bubble">
+        今日はどんな日だった？
+      </div>
 
-        <div class="avatar-placeholder">
+      <div class="controls">
 
-          <div class="papa-face">
-            👨
-          </div>
+        <button id="talkButton">
+          🎙️ パパとはなす
+        </button>
 
-          <div class="papa-name">
-            パパ
-          </div>
+        <button id="endButton">
+          おはなしをおわる
+        </button>
 
+        <div id="hint" class="hint">
+          ボタンを押したら、そのまま話しかけてね
         </div>
 
       </div>
 
-
-      <!-- パパのセリフ -->
-
-      <div class="speech">
-
-        <span id="message">
-          今日はどんな日だった？
-        </span>
-
-      </div>
-
-    </section>
-
-
-    <!-- 操作 -->
-
-    <section class="controls">
-
-      <button
-        class="talk-button"
-        id="talkButton"
-        type="button"
-      >
-        🎙️ パパとはなす
-      </button>
-
-      <div
-        class="hint"
-        id="hint"
-      >
-        ボタンをおして、おはなししてね
-      </div>
-
-    </section>
-
-  </main>
-
+    </main>
+  </div>
 
   <script>
+    const talkButton = document.getElementById("talkButton");
+    const endButton = document.getElementById("endButton");
 
-    /*
-      ========================================
-      Papa AI V2
-      UIテスト用
-      ========================================
+    const status = document.getElementById("status");
+    const statusText = document.getElementById("statusText");
 
-      次のSTEPでここに
-      OpenAI Realtime + WebRTCを接続する。
+    const bubble = document.getElementById("bubble");
+    const hint = document.getElementById("hint");
 
-      今はボタンを押した時の
-      UIだけ確認できる。
-    */
+    const avatarWrap = document.getElementById("avatarWrap");
 
+    let peerConnection = null;
+    let dataChannel = null;
+    let localStream = null;
+    let remoteAudio = null;
 
-    const talkButton =
-      document.getElementById("talkButton");
-
-    const message =
-      document.getElementById("message");
-
-    const hint =
-      document.getElementById("hint");
-
-    const avatarCard =
-      document.getElementById("avatarCard");
+    let connected = false;
+    let connecting = false;
 
 
-    let active = false;
+    function setBubble(text) {
+      bubble.textContent = text;
+    }
 
 
-    talkButton.addEventListener(
-      "click",
-      () => {
+    function setConnectingUI() {
+      connecting = true;
 
-        active = !active;
+      talkButton.disabled = true;
+      talkButton.className = "connecting";
+      talkButton.textContent = "⏳ パパをよんでるよ…";
+
+      status.classList.remove("connected");
+      statusText.textContent = "よんでるよ";
+
+      setBubble("ちょっと待ってね…");
+
+      hint.textContent = "最初だけ少し時間がかかることがあります";
+    }
 
 
-        if (active) {
+    function setConnectedUI() {
+      connecting = false;
+      connected = true;
 
-          talkButton.classList.add(
-            "listening"
+      talkButton.disabled = true;
+      talkButton.className = "connected";
+      talkButton.textContent = "👂 きいてるよ";
+
+      status.classList.add("connected");
+      statusText.textContent = "パパいるよ";
+
+      avatarWrap.classList.add("listening");
+
+      endButton.classList.add("visible");
+
+      setBubble("うん、聞いてるよ。どうした？");
+
+      hint.textContent = "そのまま普通に話してね";
+    }
+
+
+    function setDisconnectedUI() {
+      connecting = false;
+      connected = false;
+
+      talkButton.disabled = false;
+      talkButton.className = "";
+      talkButton.textContent = "🎙️ パパとはなす";
+
+      status.classList.remove("connected");
+      statusText.textContent = "パパいるよ";
+
+      avatarWrap.classList.remove("listening");
+
+      endButton.classList.remove("visible");
+
+      setBubble("またいつでも話そうね");
+
+      hint.textContent =
+        "ボタンを押したら、そのまま話しかけてね";
+    }
+
+
+    function setErrorUI(message) {
+      connecting = false;
+      connected = false;
+
+      talkButton.disabled = false;
+      talkButton.className = "";
+      talkButton.textContent = "🔄 もういちど";
+
+      status.classList.remove("connected");
+      statusText.textContent = "ちょっと待ってね";
+
+      avatarWrap.classList.remove("listening");
+      endButton.classList.remove("visible");
+
+      setBubble("うまくつながらなかったみたい");
+
+      hint.textContent = message;
+    }
+
+
+    async function startPapaAI() {
+
+      if (connecting || connected) {
+        return;
+      }
+
+      setConnectingUI();
+
+      try {
+
+        /*
+         * 1. マイク取得
+         */
+        localStream =
+          await navigator.mediaDevices.getUserMedia({
+            audio: true
+          });
+
+
+        /*
+         * 2. WebRTC接続を作成
+         */
+        peerConnection = new RTCPeerConnection();
+
+
+        /*
+         * 3. Papa AIから返ってくる音声を再生
+         */
+        remoteAudio = document.createElement("audio");
+
+        remoteAudio.autoplay = true;
+        remoteAudio.playsInline = true;
+
+        peerConnection.ontrack = (event) => {
+
+          const [stream] = event.streams;
+
+          if (stream) {
+            remoteAudio.srcObject = stream;
+          }
+
+        };
+
+
+        /*
+         * 4. 自分のマイク音声をWebRTCへ追加
+         */
+        localStream
+          .getTracks()
+          .forEach((track) => {
+            peerConnection.addTrack(
+              track,
+              localStream
+            );
+          });
+
+
+        /*
+         * 5. OpenAIイベント用DataChannel
+         */
+        dataChannel =
+          peerConnection.createDataChannel(
+            "oai-events"
           );
 
-          avatarCard.classList.add(
-            "talking"
+
+        dataChannel.onopen = () => {
+          console.log("Papa AI data channel opened");
+        };
+
+
+        dataChannel.onmessage = (event) => {
+
+          try {
+
+            const message = JSON.parse(event.data);
+
+            console.log(
+              "Papa AI event:",
+              message
+            );
+
+
+            /*
+             * 接続開始
+             */
+            if (
+              message.type === "session.started" ||
+              message.type === "session.created"
+            ) {
+              setConnectedUI();
+            }
+
+
+            /*
+             * ユーザーが話し始めた
+             */
+            if (
+              message.type ===
+              "input_audio_buffer.speech_started"
+            ) {
+              avatarWrap.classList.add("listening");
+
+              setBubble("うんうん、聞いてるよ");
+            }
+
+
+            /*
+             * ユーザーが話し終わった
+             */
+            if (
+              message.type ===
+              "input_audio_buffer.speech_stopped"
+            ) {
+              setBubble("ちょっと考えてるよ…");
+            }
+
+
+            /*
+             * Papa AIが返答を開始
+             */
+            if (
+              message.type === "response.created"
+            ) {
+              avatarWrap.classList.remove("listening");
+
+              setBubble("うん！");
+            }
+
+
+            /*
+             * Papa AIの返答完了
+             */
+            if (
+              message.type === "response.done"
+            ) {
+              avatarWrap.classList.add("listening");
+
+              setBubble("つづきも聞かせて");
+            }
+
+
+            /*
+             * OpenAI側エラー
+             */
+            if (message.type === "error") {
+
+              console.error(
+                "OpenAI Live error:",
+                message
+              );
+
+              setErrorUI(
+                "AIとの接続でエラーが起きました"
+              );
+
+            }
+
+          } catch (error) {
+
+            console.error(
+              "Data channel parse error:",
+              error
+            );
+
+          }
+
+        };
+
+
+        /*
+         * 6. SDP Offerを作る
+         */
+        const offer =
+          await peerConnection.createOffer();
+
+        await peerConnection.setLocalDescription(
+          offer
+        );
+
+
+        /*
+         * ICE candidate gathering完了を待つ
+         */
+        await waitForIceGatheringComplete(
+          peerConnection
+        );
+
+
+        /*
+         * 7. 自分たちのVercel APIへSDPを送る
+         *
+         * APIキーはブラウザには置かない。
+         */
+        const response =
+          await fetch(
+            "/api/session",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              body: JSON.stringify({
+                sdp:
+                  peerConnection
+                    .localDescription
+                    .sdp
+              })
+            }
           );
 
-          talkButton.textContent =
-            "👂 きいてるよ";
 
-          message.textContent =
-            "うんうん、どうした？";
+        const data =
+          await response.json();
 
-          hint.textContent =
-            "そのままパパに話してね";
 
+        if (!response.ok) {
+
+          console.error(
+            "Session API error:",
+            data
+          );
+
+          throw new Error(
+            data?.details?.error?.message ||
+            data?.error ||
+            "Session creation failed"
+          );
+
+        }
+
+
+        if (!data.sdp) {
+
+          throw new Error(
+            "OpenAIからSDP answerが返りませんでした"
+          );
+
+        }
+
+
+        /*
+         * 8. OpenAIのSDP Answerを設定
+         */
+        await peerConnection.setRemoteDescription({
+          type: "answer",
+          sdp: data.sdp
+        });
+
+
+        /*
+         * 接続状態も監視
+         */
+        peerConnection.onconnectionstatechange =
+          () => {
+
+            console.log(
+              "WebRTC:",
+              peerConnection.connectionState
+            );
+
+            if (
+              peerConnection.connectionState ===
+              "connected"
+            ) {
+              setConnectedUI();
+            }
+
+            if (
+              peerConnection.connectionState ===
+                "failed" ||
+              peerConnection.connectionState ===
+                "disconnected"
+            ) {
+              stopPapaAI();
+            }
+
+          };
+
+
+      } catch (error) {
+
+        console.error(
+          "Papa AI start error:",
+          error
+        );
+
+        cleanupConnection();
+
+        if (
+          error.name === "NotAllowedError"
+        ) {
+
+          setErrorUI(
+            "マイクを使えるようにして、もう一度押してね"
+          );
 
         } else {
 
-          talkButton.classList.remove(
-            "listening"
+          setErrorUI(
+            error.message ||
+            "接続できませんでした"
           );
-
-          avatarCard.classList.remove(
-            "talking"
-          );
-
-          talkButton.textContent =
-            "🎙️ パパとはなす";
-
-          message.textContent =
-            "またお話しようね！";
-
-          hint.textContent =
-            "ボタンをおして、おはなししてね";
 
         }
 
       }
+
+    }
+
+
+    /*
+     * ICE gathering完了待ち
+     */
+    function waitForIceGatheringComplete(pc) {
+
+      if (
+        pc.iceGatheringState === "complete"
+      ) {
+        return Promise.resolve();
+      }
+
+      return new Promise((resolve) => {
+
+        const checkState = () => {
+
+          if (
+            pc.iceGatheringState === "complete"
+          ) {
+
+            pc.removeEventListener(
+              "icegatheringstatechange",
+              checkState
+            );
+
+            resolve();
+          }
+
+        };
+
+        pc.addEventListener(
+          "icegatheringstatechange",
+          checkState
+        );
+
+      });
+
+    }
+
+
+    /*
+     * 接続終了
+     */
+    function stopPapaAI() {
+
+      cleanupConnection();
+
+      setDisconnectedUI();
+
+    }
+
+
+    function cleanupConnection() {
+
+      if (dataChannel) {
+
+        try {
+          dataChannel.close();
+        } catch (_) {}
+
+        dataChannel = null;
+      }
+
+
+      if (peerConnection) {
+
+        try {
+          peerConnection.close();
+        } catch (_) {}
+
+        peerConnection = null;
+      }
+
+
+      if (localStream) {
+
+        localStream
+          .getTracks()
+          .forEach(
+            (track) => track.stop()
+          );
+
+        localStream = null;
+      }
+
+
+      if (remoteAudio) {
+
+        remoteAudio.srcObject = null;
+        remoteAudio.remove();
+
+        remoteAudio = null;
+      }
+
+
+      connected = false;
+      connecting = false;
+
+    }
+
+
+    /*
+     * ボタン
+     */
+    talkButton.addEventListener(
+      "click",
+      startPapaAI
+    );
+
+
+    endButton.addEventListener(
+      "click",
+      stopPapaAI
+    );
+
+
+    /*
+     * ページを閉じたときも切断
+     */
+    window.addEventListener(
+      "beforeunload",
+      cleanupConnection
     );
 
   </script>
